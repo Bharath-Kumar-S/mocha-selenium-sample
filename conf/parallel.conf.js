@@ -1,5 +1,5 @@
-LT_USERNAME = process.env.LT_USERNAME || "<your username>";
-LT_ACCESS_KEY = process.env.LT_ACCESS_KEY || "<your accessKey>";
+LT_USERNAME = process.env.LT_USERNAME || "bharathkumarkarthick";
+LT_ACCESS_KEY = process.env.LT_ACCESS_KEY || "jM93ipW7ckFGdWCqSZxGUmld2cTTghIcBV5gQssEUSJqO879Se";
 
 var config = {
   commanCapabilities: {

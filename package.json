@@ -17,5 +17,10 @@
     "bluebird": "^3.4.6",
     "mocha": "^6.2.0",
     "selenium-webdriver": "^3.0.0-beta-3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "follow-redirects": "^1.13.1"
   }
 }
