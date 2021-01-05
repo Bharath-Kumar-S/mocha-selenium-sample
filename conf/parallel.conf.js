@@ -7,16 +7,16 @@ var config = {
     tunnel: false // Make it true to run the localhost through tunnel
   },
   multiCapabilities: [
-    {
-      // Desired capabilities
-      name: "Your Test Name", // Test name
-      platform: "Windows 10", // OS name
-      browserName: "firefox",
-      version: "latest",
-      visual: false, // To take step by step screenshot
-      network: false, // To capture network Logs
-      console: false // To capture console logs.
-    },
+    // {
+    //   // Desired capabilities
+    //   name: "Your Test Name", // Test name
+    //   platform: "Windows 10", // OS name
+    //   browserName: "firefox",
+    //   version: "latest",
+    //   visual: false, // To take step by step screenshot
+    //   network: false, // To capture network Logs
+    //   console: false // To capture console logs.
+    // },
     {
       name: "Your Test Name", // Test name
       platform: "Windows 10", // OS name
@@ -25,7 +25,13 @@ var config = {
       visual: false, // To take step by step screenshot
       network: false, // To capture network Logs
       console: false // To capture console logs.
-    }
+    },
+    {
+		 name: "Your Test Name", // Test name
+      platform: "MacOS Catalina",
+		browserName : "Safari",
+		version : "13.0"
+	}
   ]
 };
 

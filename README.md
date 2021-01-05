@@ -53,96 +53,35 @@ Finally, we will initialize our project by hitting the command npm init. This wi
 ```
 mocha_selenium_sample
         | -- specs
-                    | -- single_test.js
+                    | -- parallel_test.js
         | -- package.json
 {
-  "name": "mocha-selenium-sample",
+  "name": "Bharath-Lambda-certification",
   "version": "0.0.1",
-  "description": " Selenium examples for Mocha and LambdaTest",
+  "description": "Selenium. Mocha and LambdaTest",
   "scripts": {
-    "test": "npm run single && npm run parallel",
-    "single": "./node_modules/.bin/mocha specs/single_test.js conf/single.conf.js",
+    "test": "npm run parallel",
     "parallel": "./node_modules/.bin/mocha specs/parallel_test.js conf/parallel.conf.js --timeout=100000"
   },
   "keywords": [
     "mocha",
     "LambdaTest",
     "selenium",
-    "examples"
-  ],
+   ],
   "dependencies": {
     "bluebird": "^3.4.6",
     "mocha": "^6.2.0",
     "selenium-webdriver": "^3.0.0-beta-3"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "follow-redirects": "^1.13.1"
   }
 }
 
 ```
 ### Test Scenario
-
-In our demonstration, we will be creating a script that uses the Selenium WebDriver to make a search and open a website and assert whether the correct website is open. If assert returns true, it indicates that the test case passed successfully and will show up in the automation logs dashboard else if assert returns false, the test case fails, and the errors will be displayed in the automation logs.
-
-* **Single Test**- On a single environment (Windows 10) and single browser (Chrome)
-
-You have successfully configured your project and are ready to execute your first Mocha JavaScript testing script. Here is the first JavaScript for Mocha Testing. Lets call it <code>single_test.js</code>.
-
-```
-var assert = require("assert"),
-  webdriver = require("selenium-webdriver"),
-  conf_file = process.argv[3] || "conf/single.conf.js";
-
-var caps = require("../" + conf_file).capabilities;
-
-var buildDriver = function(caps) {
-  return new webdriver.Builder()
-    .usingServer(
-      "http://" +
-      LT_USERNAME +
-      ":" +
-      LT_ACCESS_KEY +
-      "@hub.lambdatest.com/wd/hub"
-    )
-    .withCapabilities(caps)
-    .build();
-};
-
-describe("Google's Search Functionality for " + caps.browserName, function() {
-  var driver;
-  this.timeout(0);
-
-  beforeEach(function(done) {
-    caps.name = this.currentTest.title;
-    driver = buildDriver(caps);
-    done();
-  });
-
-  it("can find search results", function(done) {
-    driver.get("https://www.lambdatest.com").then(function() {
-      driver.getTitle().then(function(title) {
-        setTimeout(function() {
-          console.log(title);
-          assert(
-            title.match(
-              "Cross Browser Testing Tools | Test Your Website on Different Browsers | LambdaTest"
-            ) != null
-          );
-          done();
-        }, 10000);
-      });
-    });
-  });
-
-  afterEach(function(done) {
-    if (this.currentTest.isPassed) {
-      driver.executeScript("lambda-status=passed");
-    } else {
-      driver.executeScript("lambda-status=failed");
-    }
-    driver.quit().then(function() {
-      done();
-    });
-  });
-});
 
 ```
 Now we have a first script ready. Let us specify the capabilituies to run the script on LambdaTest cloud-based Selenium Grid.
@@ -151,7 +90,7 @@ LT_USERNAME = process.env.LT_USERNAME || "<your username>";
 LT_ACCESS_KEY = process.env.LT_ACCESS_KEY || "<your accessKey>";
 
 exports.capabilities = {
-  'build': 'Mocha-Selenium-Sample', //Build name
+  'build': 'Your-build-name', //Build name
   'name': 'Your Test Name', // Test name
   'platform':'Windows 10', // OS name
   'browserName': 'chrome', // Browser name
@@ -171,63 +110,143 @@ Will use the same test script over different configration to demonstarte paralle
 
 ```
 var assert = require("assert"),
-  webdriver = require("selenium-webdriver"),
-  conf_file = process.argv[3] || "conf/single.conf.js";
+    webdriver = require("selenium-webdriver"),
+    conf_file = process.argv[3] || "conf/single.conf.js";
+
+const { Builder, By, Key, until, logging } = require('selenium-webdriver');
+const { FileDetector } = require(`selenium-webdriver/remote`)
+// require(`chromedriver`);
+const { expect } = require(`chai`).use(require(`chai-as-promised`));
 
 var capabilities = require("../" + conf_file).capabilities;
 
-var buildDriver = function(caps) {
-  return new webdriver.Builder()
-    .usingServer(
-      "http://" +
-        LT_USERNAME +
-        ":" +
-        LT_ACCESS_KEY +
-        "@hub.lambdatest.com/wd/hub"
-    )
-    .withCapabilities(caps)
-    .build();
+var buildDriver = function (caps) {
+    return new webdriver.Builder()
+        .usingServer(
+            "http://" +
+            LT_USERNAME +
+            ":" +
+            LT_ACCESS_KEY +
+            "@hub.lambdatest.com/wd/hub"
+        )
+        .withCapabilities(caps)
+        .build();
 };
 
-capabilities.forEach(function(caps) {
- 
-  describe("Google's Search Functionality for " + caps.browserName, function() {
-    var driver;
-    this.timeout(0);
+capabilities.forEach(function (caps) {
 
-    beforeEach(function(done) {
-      caps.name = this.currentTest.title;
-      driver = buildDriver(caps);
-      done();
-    });
+    describe("Lambda Test cretification project " + caps.browserName, async function () {
+        let driver, filename;
+        this.timeout(0);
 
-    it("can find search results" + caps.browserName, function(done) {
-      driver.get("https://www.lambdatest.com").then(function() {
-        driver.getTitle().then(function(title) {
-          setTimeout(function() {
-            console.log(title);
-            assert(
-              title.match(
-                "Cross Browser Testing Tools | Test Your Website on Different Browsers | LambdaTest"
-              ) != null
-            );
-            done();
-          }, 10000);
+        before(async function () {
+            caps.name = this.currentTest.title;
+            driver = buildDriver(caps);
+            await driver.get('https://www.lambdatest.com/automation-demos/');
         });
-      });
-    });
 
-    afterEach(function(done) {
-      if (this.currentTest.isPassed) {
-        driver.executeScript("lambda-status=passed");
-      } else {
-        driver.executeScript("lambda-status=failed");
-      }
-      driver.quit().then(function() {
-        done();
-      });
+        it(`accept cookies`, async () => {
+            let cookieLocator = await driver.findElement(By.css(`.cookiesdiv`));
+            await driver.wait(until.elementIsVisible(cookieLocator), 2000);
+            await (await driver.findElement(By.css(`.btn_accept_ck`))).click();
+            expect(await (await driver.findElement(By.css(`.cookiesdiv`))).isDisplayed()).to.be.false;
+        })
+
+        it(`Login to application`, async () => {
+            await driver.findElement(By.css(`[id="username"]`)).sendKeys(`lambda`);
+            await driver.findElement(By.css(`[id="password"]`)).sendKeys(`lambda123`, Key.RETURN);
+            expect(await (await driver.findElement(By.css(`[id="developer-name"]`))).isDisplayed()).to.be.true;
+        })
+
+        it(`Check the form actions`, async () => {
+            await driver.findElement(By.css(`[id="developer-name"]`)).sendKeys(`bharathkumarkarthick@gmail.com`);
+            expect(await driver.findElement(By.css(`[id="developer-name"]`)).getAttribute(`value`)).to.equal(`bharathkumarkarthick@gmail.com`)
+            await (await driver.findElement(By.css(`[id="populate"]`))).click();
+            await driver.wait(until.alertIsPresent(), 2000);
+            await (await driver.switchTo().alert()).accept();
+
+            if (!await (await driver.findElement(By.css(`[id="month"]`))).isSelected())
+                await (await driver.findElement(By.css(`[id="month"]`))).click();
+            expect(await (await driver.findElement(By.css(`[id="month"]`))).isSelected()).to.equal(true);
+
+            if (!await (await driver.findElement(By.css(`[name="customer-service"]`))).isSelected())
+                await (await driver.findElement(By.css(`[name="customer-service"]`))).click();
+            expect(await (await driver.findElement(By.css(`[name="customer-service"]`))).isSelected()).to.equal(true);
+
+            await (await driver.findElement(By.xpath(`//option[text()="Wallets"]`))).click();
+            expect(await driver.executeScript(`return $("option:selected").text()`)).to.equal(`Wallets`);
+
+            if (!await (await driver.findElement(By.css(`[id="tried-ecom"]`))).isSelected())
+                await (await driver.findElement(By.css(`[id="tried-ecom"]`))).click();
+            expect(await (await driver.findElement(By.css(`[name="tried-ecom"]`))).isSelected()).to.equal(true);
+        })
+
+        it(`slider test`, async () => {
+            await (await driver.findElement(By.css(`.ui-slider-handle`))).click();
+            let i = 1;
+            while (i < 9) {
+                await driver.findElement(By.css(`.ui-slider-handle`)).sendKeys(Key.RIGHT)
+                i++
+            }
+            expect(await driver.findElement(By.css(`[id="slider"] span`)).getAttribute(`style`)).to.equal(`left: 88.8889%;`)
+        })
+
+        it(`Forms - Comment`, async () => {
+            await driver.findElement(By.css(`[id="comments"]`)).sendKeys(`This is comment`);
+            expect(await driver.findElement(By.css(`[id="comments"]`)).getAttribute("value")).to.equal(`This is comment`);
+        })
+
+        it(`Download Jenkins SVG icon`, async () => {
+            await driver.executeScript("window.open('https://www.lambdatest.com/selenium-automation', '_blank');");
+            if(caps.platform.includes(`MacOS`))
+            await driver.sleep(5000);
+            handles = await driver.getAllWindowHandles();
+            await driver.switchTo().window(handles[1]);
+            expect(await driver.getTitle()).to.equal(`Selenium Grid on Cloud | Online Selenium Test Automation`)
+            let imgUrl = await driver.findElement(By.css(`.citoolbox [alt="LambdaTest Jenkins integration"]`)).getAttribute(`src`);
+            let http = require('http');
+            http = require('follow-redirects').https;
+            const fs = require('fs');
+            filename = imgUrl.replace(/^.*[\\\/]/, '')
+            const file = fs.createWriteStream(filename);
+            const request = http.get(imgUrl, function (response) {
+                response.pipe(file);
+            });
+        })
+
+        it(`File upload`, async () => {
+            await driver.switchTo().window(handles[0]);
+            await driver.setFileDetector(new FileDetector);
+            let path = require('os').type() === `Linux` ? __dirname.replace("\\", "/").split("/") : __dirname.split("\\");
+            let strippedPath = require('os').type() === `Linux` ? path.slice(0, path.length - 1).join("/") : path.slice(0, path.length - 1).join("\\");
+            let absoluteFilePath = require('os').type() === `Linux` ? `${strippedPath}/${filename}` : `${strippedPath}\\${filename}`;
+            await driver.findElement(By.css(`[id="file"][type="file"]`)).sendKeys(absoluteFilePath);
+            await (await driver.switchTo().alert()).accept();
+        })
+
+        it(`Submit form`, async () => {
+            await (await driver.findElement(By.css(`[id="submit-button"]`))).click();
+            expect(await driver.findElement(By.css(`[id="message"] h1`)).getText()).to.equal(`Thank you!`)
+            expect(await driver.findElement(By.css(`[id="message"] p`)).getText()).to.equal(`You have successfully submitted the form.`)
+            expect(await driver.findElement(By.css(`[id="message"] img`)).isDisplayed()).to.equal(true)
+        })
+
+
+        afterEach(function () {
+            if (this.currentTest.isPassed) {
+                driver.executeScript("lambda-status=passed");
+            } else {
+                driver.executeScript("lambda-status=failed");
+            }
+            //   driver.quit().then(function() {
+            //     done();
+            //   });
+        });
+
+        after(async()=>{
+            await driver.quit()
+        })
     });
-  });
 });
 
 ```
